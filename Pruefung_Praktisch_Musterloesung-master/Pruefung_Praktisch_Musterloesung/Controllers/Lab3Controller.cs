@@ -13,9 +13,16 @@ namespace Pruefung_Praktisch_Musterloesung.Controllers
 
         /**
         * 
-        * ANTWORTEN BITTE HIER
+        * --HTML Injection--
+        * Man könnte z.B. ein JavaScript(einfacher keylogger) einbetten, welches
+        * die eingaben loggt und an den Server des Hackers schickt
+        *
+        * --Brute force--
+        * Script laufen lassen welches beim Login username und
+        * Login submitted, bis man den Account hat.
         * 
         * */
+       
 
         public ActionResult Index() {
 
@@ -35,6 +42,10 @@ namespace Pruefung_Praktisch_Musterloesung.Controllers
         {
             var comment = Request["comment"];
             var postid = Int32.Parse(Request["postid"]);
+
+            // nicht scripttauglich jetzt
+            comment = comment.Replace("'", String.Empty);
+            comment = comment.Replace("\"", String.Empty);
 
             Lab3Postcomments model = new Lab3Postcomments();
 
@@ -56,6 +67,24 @@ namespace Pruefung_Praktisch_Musterloesung.Controllers
             var password = Request["password"];
 
             Lab3User model = new Lab3User();
+
+            
+
+            this.db.Add(new UserLog()
+            {
+                username = username,
+                ip = Request.UserHostAddress,
+                time = DateTime.Now
+            })
+            this.db.SaveChanges();
+
+            //code funktioniert nicht aber, hier waere gedacht, dass wenn zu viele Requests in einem zeitraum gemacht wurden, das System eine EXception wirft. bzw. den HAccker nicht zulaesst.
+            int attemptInLast5Min = this.db.UserLogs.Where(u => u.time <= DateTime.Now && u.time > DateTime.Now.AddMinutes(-5)).Count
+
+            if (attemptInLast5Min > 5)
+            {
+                throw new Exception("Too many attempts");
+            }
 
             if (model.checkCredentials(username, password))
             {

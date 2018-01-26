@@ -11,8 +11,12 @@ namespace Pruefung_Praktisch_Musterloesung.Controllers
     {
         /**
          * 
-         * ANTWORTEN BITTE HIER
+         * Mit tool buchstabenvorkommmenanalyse machen um buchstaben zu zuweisen
+         * probieren mit Brute/force
          * 
+         * 
+         * 
+         * wo ist der Ciphertext?
          * */
 
 
